@@ -13,3 +13,4 @@ _ReSharper.*
 packages/**
 !packages/repositories.config
 !packages.config
+.vs
