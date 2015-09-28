@@ -134,6 +134,11 @@ namespace Devbridge.BasicAuthentication
                     //make sure that user is not authencated yet
                     if (!context.Response.Cookies.AllKeys.Contains(AuthenticationCookieName))
                     {
+                        // hack to not update the header if it has already been sent back to the client (avoids http exception)
+                        var propertyInfo = context.Response.GetType().GetProperty("HeadersWritten");
+                        var headersWritten = (bool)propertyInfo.GetValue(context.Response, null);
+                        if (headersWritten) return;
+
                         context.Response.Clear();
                         context.Response.StatusCode = HttpNotAuthorizedStatusCode;
                         context.Response.AddHeader(HttpWwwAuthenticateHeader, "Basic realm =\"" + Realm + "\"");
